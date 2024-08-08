@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration</title>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            padding: 0;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .projectName1, .projectName2, .projectName3 {
+            color: white;
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-top: 0;
+            text-align: center;
+            margin-left: 5%;
+        }
+        .ProjectName {
+            display: flex;
+            flex-direction: column;
+            margin-left: 25%;
+        }
+        .Logo {
+            display: flex;
+            flex-direction: row;
+            background-color: #0568A1;
+            width: 98.6%;
+            height: auto;
+            border: 1px solid black;
+            padding: 10px; /* Add padding to provide spacing around content */
+        }
+        .Logo img {
+            max-width: 30%;
+            height: auto;
+            margin-bottom: 10px; /* Add margin to separate image from text */
+        }
+        .Navbar {
+            display: flex;
+            padding: 1%;
+            background-color: #0568A1;
+        }
+        .Navbar button {
+            padding: 1%;
+            color: white;
+            background-color: #0568A1;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.3s;
+        }
+        .Navbar button:hover {
+            background-color: #777;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 40px 40px;
+        }
+        .controls label {
+            margin-right: 20px;
+        }
+        .controls select,
+        .controls button {
+            padding: 5px 10px;
+            margin-right: 10px;
+        }
+        .serial-monitor {
+            margin-top: 40px;
+            width: 90%;
+            height: 200px;
+            overflow-y: auto;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #monitor {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            overflow-y: auto;
+        }
+        @media (max-width: 600px) {
+            .Navbar {
+                flex-direction: column;
+                padding: 1%;
+            }
+
+
+            .Navbar button {
+                margin-bottom: 10px;
+                width: 100%;
+                padding: 10px;
+                font-size: 1.2em;
+            }
+
+            .Logo {
+                flex-direction: column;
+                width: 94%;
+            }
+            #connect{
+                    margin-left: -142%;
+                    margin-top: 29%;
+            }
+            #disconnect{
+                    margin-top: 28%;
+            }
+            .controls{
+            flex-flow : wrap;
+            }
+            .Logo img{
+               max-width: 100%;
+            }
+
+            .ProjectName {
+                margin: 0;
+                flex-direction: row;
+                gap: 8px;
+            }
+
+            .projectName1, .projectName2, .projectName3 {
+                font-size: 1.8em;
+                margin: 5px 0;
+            }
+
+        }
+
+        @media (min-width: 601px) and (max-width: 900px) {
+            .Navbar {
+                flex-direction: row;
+                padding: 1%;
+                justify-content: space-around;
+            }
+
+            .Navbar button {
+                padding: 10px 20px;
+                font-size: 1.4em;
+                margin: 0 10px;
+            }
+
+            .Logo {
+                justify-content: space-between;
+                padding: 10px 20px;
+            }
+
+            .ProjectName {
+                margin: 0;
+            }
+
+            .projectName1, .projectName2, .projectName3 {
+                font-size: 2em;
+                margin: 0;
+            }
+        }
+        @media (min-width: 901px) {
+            .Navbar {
+                padding: 1.5%;
+            }
+            .Navbar button {
+                padding: 1%;
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="Navbar">
+    <button onclick="home()">Home</button>
+    <button onclick="config()">Config</button>
+</div>
+<div class="Logo">
+    <img src="https://www.drdo.gov.in/drdo/sites/default/files/drdo_logo_0.png?w=100" alt="Logo">
+    <div class="ProjectName">
+        <div class="projectName1">Acoustic</div>
+        <div class="projectName2">Direction</div>
+        <div class="projectName3">Finder</div>
+    </div>
+</div>
+<div class="controls">
+    <label for="com-port">Available COM Port:</label>
+    <button id="request-port">Request Port</button>
+    <select id="com-port">
+        <option value="com1">COM1</option>
+        <option value="com2">COM2</option>
+        <option value="com3">COM3</option>
+        <!-- Add more options as needed -->
+    </select>
+    <label for="bit-rate">Bit Rate:</label>
+    <select id="bit-rate">
+        <option value="9600">9600</option>
+        <option value="14400">14400</option>
+        <option value="19200">19200</option>
+        <!-- Add more options as needed -->
+    </select>
+    <button id="connect" onclick="enableDisconnect()">Connect</button>
+    <button id="disconnect" disabled>Disconnect</button>
+</div>
+<div class="serial-monitor">
+    <textarea id="monitor" readonly></textarea>
+</div>
+<script>
+function config() {
+        window.location.href = "Config";
+    }
+    function home() {
+        window.location.href = "/";
+    }
+    function enableDisconnect() {
+        document.getElementById('disconnect').disabled = false;
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const connectButton = document.getElementById('connect');
+        const disconnectButton = document.getElementById('disconnect');
+        const monitor = document.getElementById('monitor');
+
+        connectButton.addEventListener('click', () => {
+            const comPort = document.getElementById('com-port').value;
+            const bitRate = document.getElementById('bit-rate').value;
+            monitor.value += `Connected to ${comPort} at ${bitRate} bit rate.\n`;
+        });
+
+        disconnectButton.addEventListener('click', () => {
+            monitor.value += 'Disconnected.\n';
+        });
+    });
+
+
+
+    async function listPorts() {
+        // Check if the Web Serial API is supported
+        if ("serial" in navigator){
+            try{
+                // Get all available ports
+                const ports = await navigator.serial.getPorts();
+                // Clear the existing options
+                const portList = document.getElementById('com-port');
+                    portList.innerHTML = '';
+
+                // Add available ports to the dropdown
+                ports.forEach((port, index) => {
+                        const option = document.createElement('option');
+                        option.value = index;
+                        option.textContent = `Port ${index + 1}`;
+                        portList.appendChild(option);
+                    });
+
+                    if (ports.length === 0) {
+                        const option = document.createElement('option');
+                        option.textContent = 'No ports available';
+                        portList.appendChild(option);
+                    }
+                } catch (error) {
+                    console.error('Failed to get ports:', error);
+                }
+            } else {
+                alert('Web Serial API not supported.');
+            }
+        }
+
+        document.getElementById('request-port').addEventListener('click', async () => {
+            try {
+                // Request a port and add it to the list
+                const port = await navigator.serial.requestPort();
+                await port.open({ baudRate: 9600 });  // Open the port
+                await port.close();  // Close the port
+
+                // Refresh the list of available ports
+                listPorts();
+            } catch (error) {
+                console.error('Failed to request port:', error);
+            }
+        });
+
+        // Initial call to list available ports
+        listPorts();
+
+                    
+</script>
+</body>
+</html>
